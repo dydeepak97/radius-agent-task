@@ -20,18 +20,18 @@ export function makeApiCall(requestOptions, cb) {
 
   // console.log(fetchDataRecursively(requestUrl).then(response => response));
 
-  // fetchDataRecursively(requestUrl).then(response => {
-  //   console.log('inMakeAPI', response);
+  fetchDataRecursively(requestUrl).then(response => {
+    console.log('inMakeAPI', response);
 
-  //   cb(null, response)
-  // }
-  // ).catch(err => {
-  //   console.log('yup');
+    cb(null, response)
+  }
+  ).catch(err => {
+    console.log('yup');
     
-  //   cb(err, null)
-  // });
+    cb(err, null)
+  });
 
-  return cb(null, fetchDataRecursively(requestUrl));
+  // return cb(null, fetchDataRecursively(requestUrl));
 
 };
 
@@ -42,7 +42,7 @@ export function fetchDataRecursively(url, data = []) {
 
   // return [];
 
-  return fakeData;
+  // return fakeData;
 
   return axios.get(url)
     .then(response => {

@@ -10,7 +10,7 @@ export function getIssuesForRepository(repoUrl, cb) {
     requestOptions = {
       protocol: 'https',
       hostname: GITHUB_API_HOST,
-      pathname: `repos/${repoPath}/issues`,
+      pathname: `repos${repoPath}/issues`,
       query: {
         state: 'open',
         per_page: 100
