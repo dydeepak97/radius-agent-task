@@ -1,7 +1,7 @@
-# Github Repository Issue Count [Link]
+# Github Repository Issue Count
 [App Demo](https://dy-radius-task.herokuapp.com/)
 
-##Description:
+## Description:
 
 This is a ReactJS app.
 This app can be used to fetch open issues count of a repository using the url of the repository. The app uses GitHub API v3 to fetch the data.
@@ -16,10 +16,10 @@ API returns data in the form of an array of issues. Each issue element is an obj
 
 This app has certain limitations that are described in improvements section.
 
-####Demo
+#### Demo
 The app is deployed on heroku. To use the app, Click [Here](https://dy-radius-task.herokuapp.com/)
 
-#####Run locally
+##### Run locally
 To run the app locally, just clone this repo and run following commands: 
   ```
   npm install
@@ -27,7 +27,7 @@ To run the app locally, just clone this repo and run following commands:
   ```
   The app can now be used on browser on [localhost:3000](localhost:300)
 
-#####Improvements
+##### Improvements
 
 The App is great for repositories with less than 100 open issues but is not well suited for repositories with huge number of open issue, e.g. 900.
 
