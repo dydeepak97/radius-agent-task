@@ -1,69 +1,54 @@
 import url from 'url';
 import axios from 'axios';
 import parseLinkHeader from 'parse-link-header';
-import { fakeData } from './data';
+
+/**
+ * This function builds the request url from the options.
+ * It calls the callback function passed to it when the
+ * promise is resolved.
+ * 
+ * @param {Object} requestOptions 
+ * @param {Function} cb 
+ */
 
 export function makeApiCall(requestOptions, cb) {
   let requestUrl = url.format(requestOptions);
 
-  console.log(requestUrl);
+  fetchDataRecursively(requestUrl).catch(err => {
 
-  // axios.get(requestUrl)
-  //   .then(response => {
-  //     console.log('headers', parseLinkHeader(response.headers.link));
+    return cb(err, null)
+  })
+    .then(response => {
 
-  //     cb(null, response.data);
-  //   })
-  //   .catch(err => {
-  //     return cb(err, null)
-  //   });
-
-  // console.log(fetchDataRecursively(requestUrl).then(response => response));
-
-  fetchDataRecursively(requestUrl).then(response => {
-    console.log('inMakeAPI', response);
-
-    cb(null, response)
-  }
-  ).catch(err => {
-    console.log('yup');
-    
-    cb(err, null)
-  });
-
-  // return cb(null, fetchDataRecursively(requestUrl));
+      return cb(null, response)
+    });
 
 };
 
+/**
+ * The Github v3 API return the data with pagination. Maximum allowed results per page is 100.
+ * To fetch issues from repositories with more than 100 open issue,
+ * we need to call the API multiple times.
+ * This function recursively calls the API until there is no more 'next page' left.
+ * 
+ * @param {String} url 
+ * @param {Array} data 
+ */
 
-export function fetchDataRecursively(url, data = []) {
-
-  console.log('Recursive');
-
-  // return [];
-
-  // return fakeData;
+function fetchDataRecursively(url, data = []) {
 
   return axios.get(url)
     .then(response => {
-
-      console.log('FUll:', response);
-
       let linkHeader = parseLinkHeader(response.headers.link);
 
       if (!linkHeader || !linkHeader.next) {
-        console.log('Fetching DONE');
-        console.log('Data', data);
-
 
         return data.concat(response.data);
       }
-      console.log('Fetching more', data);
 
       return fetchDataRecursively(linkHeader.next.url, data.concat(response.data));
     })
     .catch(err => {
-      console.log('Errrrrr', err);
 
       throw err;
     });

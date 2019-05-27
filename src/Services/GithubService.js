@@ -4,6 +4,14 @@ import url from 'url';
 const GITHUB_API_HOST = 'api.github.com',
   issueEx = "http://api.github.com/repos/octocat/Hello-World/issues{/number}";
 
+/**
+ * This function is used to fetch issues for a  given 
+ * repository url. It calls @makeApiCall to fetch the data
+ * from api and passed callback function to it.
+ * 
+ * @param {String} repoUrl 
+ * @param {Function} cb 
+ */
 
 export function getIssuesForRepository(repoUrl, cb) {
   let repoPath = url.parse(repoUrl).pathname,
@@ -13,7 +21,7 @@ export function getIssuesForRepository(repoUrl, cb) {
       pathname: `repos${repoPath}/issues`,
       query: {
         state: 'open',
-        per_page: 100
+        per_page: 100   // Maximum allowed page size
       }
     }
 

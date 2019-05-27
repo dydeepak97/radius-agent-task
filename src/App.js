@@ -4,7 +4,6 @@ import './App.css';
 import moment from 'moment';
 import { getIssuesForRepository } from './Services/GithubService';
 import CountTable from './Components/CountTable';
-import Card from './Components/Card';
 import SpinnerGroup from './Components/SpinnerGroup';
 
 class App extends Component {
@@ -19,25 +18,25 @@ class App extends Component {
     }
   }
 
+  /**
+   * Called when search button is clicked.
+   */
   handleSearch = () => {
+    // Return and update error message if url field is empty
     if (!this.state.repoUrl) {
       this.setState({
         errorMessage: 'Enter a url first'
       });
       return;
     }
-    console.log('Time 24 hours ago:', moment().subtract(1, 'days').format());
 
-    if (this.state.currentTime > moment(this.state.currentTime).subtract(1, 'days').format()) {
-      console.log('DDD');
-
-    }
-
+    // To hide errorMessage and Display loading state
     this.setState({
       isLoading: true,
       errorMessage: ''
     });
 
+    // Fetch issues from api.
     getIssuesForRepository(this.state.repoUrl, this.handleRepoData)
   }
 
@@ -47,6 +46,9 @@ class App extends Component {
     });
   }
 
+  /**
+   * Used as callback function to be invoked when api returns data.
+   */
   handleRepoData = (err, data) => {
     if (err) {
       this.setState({
@@ -56,6 +58,8 @@ class App extends Component {
       });
       return;
     }
+
+    // If the data is not array, it means that api did not find a matching repository
     if (!Array.isArray(data)) {
       this.setState({
         errorMessage: 'No repository found. Change search url',
@@ -65,6 +69,7 @@ class App extends Component {
       return;
     }
 
+    // If array is empty, No issue are open in the repository.
     if (Array.isArray(data) && data.length === 0) {
       this.setState({
         errorMessage: 'No issues in this repository',
@@ -73,16 +78,18 @@ class App extends Component {
       });
       return;
     }
+
+    // If no problems in data, then update state with data and hide loading state.
     this.setState({
       issueList: data,
       isLoading: false
     });
-    console.log('API call done');
-    console.log('Data', data);
-    console.log('Error', err);
-    console.log(this.state.errorMessage);
+    
   }
 
+  /**
+   * Return counts of issue that were opened a week ago or before.
+   */
   getIssueBeforeWeek = () => {
     let { issueList } = this.state,
       count = 0;
@@ -95,6 +102,9 @@ class App extends Component {
     return count;
   }
 
+  /**
+   * Returns count of issues opened within this week but before last 24 hours.
+   */
   getIssueWithinWeek = () => {
     let { issueList } = this.state,
       count = 0;
@@ -108,6 +118,9 @@ class App extends Component {
     return count;
   }
 
+  /**
+   * Returns count of issues opened in the last 24 hours.
+   */
   getIssueWithinDay = () => {
     let { issueList } = this.state,
       count = 0;
@@ -123,74 +136,52 @@ class App extends Component {
   render() {
     return (
       <div className="container-fluid text-center">
-        <div class="form-group mt-3">
-          <h3 className='text-light'>Enter a Github repository URL</h3>
-          <input
-            type="text"
-            className="form-control form-control-lg mt-3"
-            id="exampleInputEmail1"
-            aria-describedby="emailHelp"
-            placeholder="Enter email"
-            value={this.state.repoUrl}
-            onChange={this.handleUrlFieldChange}
-            autoFocus
-          />
-        </div>
-        <button
-          className="btn btn-primary btn-lg mt-3"
-          onClick={this.handleSearch}
-          disabled={this.state.isLoading}
-        >
-          {
-            this.state.isLoading ?
-              <div>
-                <span class="spinner-grow spinner-border-sm" role="status" aria-hidden="true"></span>
-                {/* <span class="sr-only">Loading...</span> */}
-              </div>
-              :
-              'Search'
-          }
-        </button>
-        {
-          this.state.errorMessage && 
-          <h2 className='mt-3 text-muted'>{this.state.errorMessage}</h2>
-        }
-        {
-          !this.state.errorMessage && 
-          (this.state.isLoading ?
-            <SpinnerGroup /> :
-            <CountTable
-              total={this.state.issueList.length}
-              beforeWeek={this.getIssueBeforeWeek()}
-              withinWeek={this.getIssueWithinWeek()}
-              withinDay={this.getIssueWithinDay()}
-            />)
-        }
-
-        {/* <CountTable
-          total={this.state.issueList.length}
-          beforeWeek={this.getIssueBeforeWeek()}
-          withinWeek={this.getIssueWithinWeek()}
-          withinDay={this.getIssueWithinDay()}
-        /> */}
-
-        {/* {this.getIssueBeforeWeek()}<br />
-          {this.getIssueWithinWeek()}<br />
-          {this.getIssueWithinDay()}<br />
-
-          <Card />
-          <input
-            type='text'
-            value={this.state.repoUrl}
-            onChange={this.handleUrlFieldChange}
-          // autoFocus
-          />
+        <div className='main'>
+          <div class="form-group mt-3">
+            <h3 className='text-light'>Enter a Github repository URL</h3>
+            <input
+              type="text"
+              className="form-control form-control-lg mt-3"
+              id="exampleInputEmail1"
+              aria-describedby="emailHelp"
+              placeholder="Enter URL. Example- https://github.com/dydeepak97/radius-agent-task"
+              value={this.state.repoUrl}
+              onChange={this.handleUrlFieldChange}
+              autoFocus
+            />
+          </div>
           <button
-            onClick={this.handleClick}
+            className="btn btn-primary btn-lg mt-3"
+            onClick={this.handleSearch}
+            disabled={this.state.isLoading}
           >
-            Search
-          </button> */}
-      </div>
+            {
+              this.state.isLoading ?
+                <div>
+                  <span class="spinner-grow spinner-border-sm" role="status" aria-hidden="true"></span>
+                </div>
+                :
+                'Search'
+            }
+          </button>
+          {
+            this.state.errorMessage &&
+            <h2 className='mt-3 text-muted'>{this.state.errorMessage}</h2>
+          }
+          {
+            !this.state.errorMessage &&
+            (this.state.isLoading ?
+              <SpinnerGroup /> :
+              <CountTable
+                total={this.state.issueList.length}
+                beforeWeek={this.getIssueBeforeWeek()}
+                withinWeek={this.getIssueWithinWeek()}
+                withinDay={this.getIssueWithinDay()}
+              />)
+          }
+        </div>
+
+      </div >
     );
   }
 }
