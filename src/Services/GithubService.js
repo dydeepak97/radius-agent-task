@@ -1,8 +1,7 @@
 import { makeApiCall } from "./UtilService";
 import url from 'url';
 
-const GITHUB_API_HOST = 'api.github.com',
-  issueEx = "http://api.github.com/repos/octocat/Hello-World/issues{/number}";
+const GITHUB_API_HOST = 'api.github.com';
 
 /**
  * This function is used to fetch issues for a  given 

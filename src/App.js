@@ -50,6 +50,8 @@ class App extends Component {
    * Used as callback function to be invoked when api returns data.
    */
   handleRepoData = (err, data) => {
+    let issues;
+
     if (err) {
       this.setState({
         errorMessage: 'Something went wrong',
@@ -79,9 +81,17 @@ class App extends Component {
       return;
     }
 
+    issues = data.filter( element => {
+      if(element.hasOwnProperty('pull_request')){
+        return false;
+      }
+
+      return true;
+    });
+
     // If no problems in data, then update state with data and hide loading state.
     this.setState({
-      issueList: data,
+      issueList: issues,
       isLoading: false
     });
     

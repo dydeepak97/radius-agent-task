@@ -12,7 +12,10 @@ The url entered by user is parsed to extract the pathname. The extracted pathnam
 
 The GitHub API also allows adding query parameter `state` to only fetch issues with a certain state. `'open'` is passed as `state` query parameter to fetch only open issues.
 
+The Github API includes pull requests as issues when returning issue data. We need to filer that out to only get issues. Each pull request included in the data as an issue has `pull_request` property. We filter out the elements with this property.
+
 API returns data in the form of an array of issues. Each issue element is an object with properties of the issue. One of the properties of the issue is `created_at`. This property is used to segregate the issues according to the problem statement.
+
 
 This app has certain limitations that are described in improvements section.
 

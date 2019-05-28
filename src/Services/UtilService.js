@@ -15,11 +15,9 @@ export function makeApiCall(requestOptions, cb) {
   let requestUrl = url.format(requestOptions);
 
   fetchDataRecursively(requestUrl).catch(err => {
-
     return cb(err, null)
   })
     .then(response => {
-
       return cb(null, response)
     });
 
@@ -42,14 +40,12 @@ function fetchDataRecursively(url, data = []) {
       let linkHeader = parseLinkHeader(response.headers.link);
 
       if (!linkHeader || !linkHeader.next) {
-
         return data.concat(response.data);
       }
-
+      
       return fetchDataRecursively(linkHeader.next.url, data.concat(response.data));
     })
     .catch(err => {
-
       throw err;
     });
 
